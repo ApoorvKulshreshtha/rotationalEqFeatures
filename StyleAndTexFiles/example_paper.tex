@@ -288,8 +288,52 @@ Similar to experiments with noise, we have kept two standard observations for co
 
 As expected, there is a steep decline in the performance of the harmonic filters on increase in sparsity. With higher levels of sparsity, the filters perform poorly and lose their rotation equivariance property. Further on extremely high values of sparsity it is observed that due to the constrained filters in harmonic networks, the accuracy falls even below CNN on rotated ,sparse images. This stands as a testimony to the adverse effect of sparsity in harmonic networks.
 
+\subsection{Quality}
+
+Images in real world come in varying quality and cannot be expected to contain the same level of details as images used for image processing and classification in image labs in academia. For example, an image captured by a CCTV street camera is bound to be of low quality along with some inherent noise. It is, thus, important to test the efficacy of rotational equivariant features on these real world low quality images. There is yet another incentive for evaluating the performance of these features on images of varying quality. Low quality images are normally of smaller size as compared to their high-quality counterparts and consequently occupy much less disk space. Especially, if the reduction in quality is a consequence of some form of compression, the difference in size would be quite significant. If harmonic filters can be found to perform comparatively well on this image corpus of low quality rotated images, this inherent low size can be exploited to design datasets which are comparatively inexpensive to store and work with. Also the training/learning time can be considerably reduced.
+
+\textbf{Factors affecting image quality :}
+
+There are various ways in which the quality of an image might be affected. We focus on two important compression techniques that affect image quality :
+
+1.	\emph{Compressed Sensing} : 
+
+Compressed sensing or sparse sampling is a signal processing technique for efficiently acquiring and reconstructing a signal. Compressed sensing works by predicting the solutions to underdetermined linear systems of a signal. This is based on the principle that, through optimization, the sparsity of a signal can be exploited to recover it from far fewer samples than required by the Shannon-Nyquist sampling theorem. Compressed sensing builds upon the fundamental fact that we can represent many signals using only a few non-zero coefficients in a suitable basis or dictionary. Nonlinear optimization can then enable recovery of such signals from very few measurements. This allows sampling/capturing images in a sparse or compressed way so as to reduce size. But the low size image sensed in this fashion is also expected to be of low quality.
+
+2.	\emph{ JPEG Compression }:
+
+JPEG is a lossy compression technique for digital images. The key to the JPEG baseline compression process is a mathematical transformation known as the Discrete Cosine Transform (DCT). The DCT is in a class of mathematical operations that includes Fast Fourier Transform (FFT), as well as many others. The basic purpose of these operations is to take a signal and transform it from one type of representation to another. For example, an image is a two-dimensional signal that is perceived by the human visual system. The DCT can be used to convert the signal (spatial information) into numeric data ("frequency" or "spectral" information) so that the image’s information exists in a quantitative form that can be manipulated for compression.The image can then be restored to its original representational space for processing and classification. However, the compression method is lossy, meaning that some original image information is lost and cannot be restored, affecting image quality in the process.
+
+We initially had decided to measure the effect of compressed sensing on rotational equivariant features. However, since after compressed sensing, the image representation space changes we decided, instead, to measure the effect of Discrete Cosine Transform (DCT) on rotational equivariant features using JPEG compression.
+
+
+\textbf{Analysis of image Quality reduction on harmonic
+filters :}
+
+As we attempt to analyze the effect of quality on rotational equivariant harmonic filters, it is useful to remind ourselves how they fundamentally differ from the ad hoc filters in conventional convolution neural networks. As discussed in harmonic networks, the filters are hard baked to belong from the family of circular harmonics. This hard baking of filters, however, constrains the variety of filters that the network can learn. Consequently, the filter diversity of such a network is bound to be lower than the conventional convolution neural networks (CNN). This dearth in filter diversity means that the network needs to learn more filters than the convolutional CNNs, in order to perform equally accurately whilst being rotationally equivariant.
+
+As we observed in the sections above, this constraint on filter diversity adversely affects its performance as image sparsity and noise increases. This can also be an issue when the inherent quality of the input image is quite high and hence the pixel gradient is quite steep. However, low quality images have low pixel gradient. This means that, as the quality of the image reduces, assuming that its resolution remains constant, the pixel that are adjacent to each other start taking up very similar intensity levels. This means that a network can get away with learning comparatively fewer different filters on such images. Consequently, CNNs are found to learn redundant filters on such images. This in turn should suit a harmonic network with low filter diversity. Unlike, sparsity and noise, the performance of a harmonic network should not be adversely affected as image quality decreases. Thus, we expect harmonic filters to mimic the performance of conventional CNNs whereby its accuracy plateaus as image quality keeps on reducing. It is normal for CNNs to achieve this behavior as they never are constrained in the way and types of filters they are allowed to learn and hence can adjust to image quality by learning suitable filters.
+
+This assumption, however, might not remain true as the image quality continues dropping below a certain threshold. We hypothesize, the presence of an image quality threshold below which the image is rendered indistinguishable and further reducing its quality should affect the performance of both conventional CNNs and harmonic filters much more rapidly. Below this quality threshold, the image would not have enough diverse information in its representation to be suitable to be used for the task of image classification. We now proceed to back our hypothesis with experimental evidence.
+
+\textbf{Experimental setup:}
+ 
+The setup environment remains the same. All experiments are conducted for 3 settings as usual, harmonic network with rotated images, CNN with rotates images and CNN on non-rotated images. The image data set used is CIFAR10, having 10 classes of images and about 60k images in total each having resolution of 32x32. The data is divided to have about 46k images in the training set, and 7k images each in the validation and test sets. The image quality is reduced by applying JPEG compression using the Python Imaging Library (PIL). PIL was also employed to randomly rotate images to feed into the rotated image configurations.
+
+\begin{figure}[t!]
+  \includegraphics[width=\linewidth]{vggAndHarmVsquality.png}
+  \caption{Graph showing trend of accuracy with decrease in image quality}
+  \label{fig:SparseGraph}
+\end{figure}
+
+\textbf{Experimental Results:}
+
+As hypothesized, all three configurations show similar behavior. As quality reduces from a 100 percent, the accuracy of all three configurations only plateaus, reducing by comparatively lower amounts from the initial starting point. The lower threshold for image quality is found to be in the region of 20 percent, reducing the image quality below which, induces a steep decrease in the classification accuracy of all three configurations. However, as with all previous experiments, harmonic networks outperform its CNN counterpart by a considerable margin for the rotated image configuration.
+
 
 \section{Conclusion}
+
+We’d like to conclude by saying that rotational equivariant filters hard baked from the family of circular harmonics are a significant upgrade on the unconstrained and ad hoc filters learnt by conventional CNNs. While their remains certain concerns regarding the cost of scaling networks with harmonic filter in order to increase filter diversity, their efficacy over classifying rotated images warrants further research and work with them. They perform significantly better on rotated images than their CNN counterparts in all experimental settings. Unless your domain involves dealing with highly sparse images, harmonic filters remain prime candidates to train rotational equivariant networks. Their ability to mimic CNNs immunity to quality reduction means they can also be used for classifying low quality rotated images.
 
 \section{Future Work}
 Our research clearly points out how various factors of an image like image sparsity, noise level and quality affect traditional convolutional networks in ways that do not hold true for the rotation equivariant networks. All the factors tested in this paper make sure that the images space does not change, we would like to work on how lower dimensional feature representations like compressed sensing and sketching affect harmoncic convolutions. Lower dimensional representations can also speed up the time taken to train the network and save on essential resources. Hence it would be interesting to see the tradeoffs between the use of lower dimensional representations for learning rotational equivariant features and the loss of accuracy
