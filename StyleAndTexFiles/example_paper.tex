@@ -117,9 +117,14 @@ Current convolution methods for feature learning are already translation equivar
 \end{abstract} 
 
 \section{Introduction}
+Traditional convolutional networks are the one of the popular methods for Image Classification. Due to various advancements over the years and the availability of more computational power convolutional neural networks have been performing exceptionally well. Although the traditional CNN’s are translational invariant i.e. they can correctly classify an image even if the image is translated along the X or Y axis they are still can’t perform well on images that are rotated. Since in real-world scenarios the images are taken from different angles and they are rotated along different axis’s it is important to be able to detect images which are rotated. Recent research suggests using harmonic convolutions to learn rotational equivariant features. Our paper explores how these harmonic convolutions work and their performance on rotated images. Another issue in classifying images is that the images which are used in various applications have issues like low quality and some unavoidable noise. Hence it is important that if we are using harmonic convolutions they should be able to recognize these images and should not be affected with factors like these. Our research focuses on how to get the best results on rotated images and how factors like noise, image density and image sparsity affect these methods.
+
 %\label{submission}
 
 \section{Related Work}
+In a large number of applications, the image data used will have images that are from different angle and rotated along many axis’s. The paper by Worrall et al. [1], on harmonic Network describes how harmonic convolution based filters can be used for learning rotational equivariant features. We use this approach to study how these harmonic features learnt are affected by various parameters like noise, sparsity, and loss of quality during image compression. Various papers like Dodge and Karam[2] have explored how Image Quality and how it affects the ability of a Neural Network to accurately recognize an image. They have pointed out some interesting conclusions about how the networks are susceptible to factors like noise and blur but are resilient to compressions. Basu et al.[4] has explored the MNSIT dataset with additional Gaussian noise and proposed some changes to the architecture since the traditional ones did that perform well. Rigamonti et al. [3] describes the effect of sparse representation of images on image classification he concludes that at a reasonable noise level sparsity does not affect the classification of images and given the high computation cost in sparse encoding the images it can be avoided. Zabala et al.[4] in their paper in compare the affect of JPEG and JPEG-2000 compression on Image classification and concluded that the type of compression used also plays an important role in classifying images.
+
+In this paper, we aim to bring out the differences in how individual factors in an image affect a traditional CNN differ form a neural network trained using harmonic convolutions. We alter the images by introducing gaussian noise, sparsity and change of quality to see how these factors affect the rotational equivariant features learnt using harmonic convolutions. We use the CIFAR-10 dataset to run our experiments. This dataset contains 60000 32x32 color images in 10 classes, with 6000 images per class
 
 
 \section{Problem Analysis}
@@ -287,13 +292,19 @@ As expected, there is a steep decline in the performance of the harmonic filters
 \section{Conclusion}
 
 \section{Future Work}
+Our research clearly points out how various factors of an image like image sparsity, noise level and quality affect traditional convolutional networks in ways that do not hold true for the rotation equivariant networks. All the factors tested in this paper make sure that the images space does not change, we would like to work on how lower dimensional feature representations like compressed sensing and sketching affect harmoncic convolutions. Lower dimensional representations can also speed up the time taken to train the network and save on essential resources. Hence it would be interesting to see the tradeoffs between the use of lower dimensional representations for learning rotational equivariant features and the loss of accuracy
 
 \section{References}
+[1] Worrall, D. E., Garbin, S. J., Turmukhambetov, D., and Brostow, G. J. (2016). Harmonic Networks: Deep Translation and Rotation Equivariance. arXiv preprint arXiv:1612.04642.
 
-We will continue the ICML tradition in which the authors are given the
-option of providing a short reaction to the initial reviews. These
-reactions will be taken into account in the discussion among the
-reviewers and area chairs.
+[2] Dodge, S., and Karam, L. (2016, June). Understanding how image quality affects deep neural networks. In Quality of Multimedia Experience (QoMEX), 2016 Eighth International Conference on (pp. 1-6). IEEE.
+
+[3] Rigamonti, R., Brown, M. A., and Lepetit, V. (2011, June). Are sparse representations really relevant for image classification?. In Computer Vision and Pattern Recognition (CVPR), 2011 IEEE Conference on (pp. 1545-1552). IEEE.
+
+[4] Zabala, A., Pons, X., Díaz-Delgado, R., García, F., Aulí-Llinàs, F., and Serra-Sagristà, J. (2006, July). Effects of JPEG and JPEG2000 lossy compression on remote sensing image classification for mapping crops and forest areas. In Geoscience and Remote Sensing Symposium, 2006. IGARSS 2006. IEEE International Conference on (pp. 790-793). IEEE.
+
+
+
 
 \subsection{Submitting Final Camera-Ready Copy}
 
