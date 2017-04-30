@@ -117,7 +117,7 @@ Current convolution methods for feature learning are already translation equivar
 \end{abstract} 
 
 \section{Introduction}
-Traditional convolutional networks are the one of the popular methods for Image Classification. Due to various advancements over the years and the availability of more computational power convolutional neural networks have been performing exceptionally well. Although the traditional CNN’s are translational invariant i.e. they can correctly classify an image even if the image is translated along the X or Y axis they are still can’t perform well on images that are rotated. Since in real-world scenarios the images are taken from different angles and they are rotated along different axis’s it is important to be able to detect images which are rotated. Recent research suggests using harmonic convolutions to learn rotational equivariant features. Our paper explores how these harmonic convolutions work and their performance on rotated images. Another issue in classifying images is that the images which are used in various applications have issues like low quality and some unavoidable noise. Hence it is important that if we are using harmonic convolutions they should be able to recognize these images and should not be affected with factors like these. Our research focuses on how to get the best results on rotated images and how factors like noise, image density and image sparsity affect these methods.
+Traditional convolutional networks are one of the popular methods for Image Classification. Due to various advancements over the years and the availability of more computational power convolutional neural networks have been performing exceptionally well. Although the traditional CNN’s are translational invariant i.e. they can correctly classify an image even if the image is translated along the X or Y axis they are still can’t perform well on images that are rotated. Since in real-world scenarios the images are taken from different angles and they are rotated along different axis’s it is important to be able to detect images which are rotated. Recent research suggests using harmonic convolutions to learn rotational equivariant features. Our paper explores how these harmonic convolutions work and their performance on rotated images. Another issue in classifying images is that the images which are used in various applications have issues like low quality and some unavoidable noise. Hence it is important that if we are using harmonic convolutions they should be able to recognize these images and should not be affected with factors like these. Our research focuses on how to get the best results on rotated images and how factors like noise, image density and image sparsity affect these methods.
 
 %\label{submission}
 
@@ -186,7 +186,7 @@ We will now delve deeper into the architecture of a Harmonic filter.  The learna
 
 Now, that we have explained the architecture of the harmonic filters, there is one very important characteristic to notice. Because we are learning a complete radial profile which depends only on the radius, the filter values for a particular radial profile are same, with only difference in sign. This can be perceived as an advantage as well as a disadvantage. Advantage because this kind of constraint enables the network to learn a rotation invariant classifier. And a disadvantage because the constraint doesn't let the network learn the filter freely during training , so that it can perform the best. In the next sections, we will see how this constraining of filters serves as an advantage as well as a disadvantage when looking at different applications.
 
-To reiterate, till now the paper gives the reader a background of how Harmonic Networks work and how they are able to hard-bake rotation equivariance. More reference on this can be found in the paper [GIVE REFERENCE HERE]. From now on, we will discuss our main focus which describes how change in signal sparsity, signal density and noise level affects rotational equivariant features. 
+To reiterate, till now the paper gives the reader a background of how Harmonic Networks work and how they are able to hard-bake rotation equivariance. More reference on this can be found in the paper [1]. From now on, we will discuss our main focus which describes how change in signal sparsity, signal density and noise level affects rotational equivariant features. 
 
 \section{Parameters Affecting Rotational Equivariance}
 
@@ -347,8 +347,25 @@ Our research clearly points out how various factors of an image like image spars
 
 [4] Zabala, A., Pons, X., Díaz-Delgado, R., García, F., Aulí-Llinàs, F., and Serra-Sagristà, J. (2006, July). Effects of JPEG and JPEG2000 lossy compression on remote sensing image classification for mapping crops and forest areas. In Geoscience and Remote Sensing Symposium, 2006. IGARSS 2006. IEEE International Conference on (pp. 790-793). IEEE.
 
+[5] Russo, F. (2003). A method for estimation and filtering of Gaussian noise in images. IEEE Transactions on Instrumentation and Measurement, 52(4), 1148-1154.
 
+[6] Landauer, R. (1989). Johnson-Nyquist noise derived from quantum mechanical transmission. Physica D: Nonlinear Phenomena, 38(1-3), 226-229.
 
+[7] Brida, G., Genovese, M., and Berchera, I. R. (2010). Experimental realization of sub-shot-noise quantum imaging. Nature Photonics, 4(4), 227-230.
+
+[8] Olsen, S. I. (1993). Estimation of noise in images: An evaluation. CVGIP: Graphical Models and Image Processing, 55(4), 319-323.
+
+[9] Yang, J., Yu, K., Gong, Y., and Huang, T. (2009, June). Linear spatial pyramid matching using sparse coding for image classification. In Computer Vision and Pattern Recognition, 2009. CVPR 2009. IEEE Conference on (pp. 1794-1801). IEEE.
+
+[10] Chen, X., Lin, Q., Kim, S., Carbonell, J. G., and Xing, E. P. (2012). Smoothing proximal gradient method for general structured sparse regression. The Annals of Applied Statistics, 719-752.
+
+[11] Tibshirani, Robert, et al. "Sparsity and smoothness via the fused lasso." Journal of the Royal Statistical Society: Series B (Statistical Methodology) 67.1 (2005): 91-108.
+
+[12] Friedman, J., Hastie, T., and Tibshirani, R. (2010). A note on the group lasso and a sparse group lasso. arXiv preprint arXiv:1001.0736.
+
+[13] Davenport, M. A., Duarte, M. F., Eldar, Y. C., and Kutyniok, G. (2011). Introduction to compressed sensing. Preprint, 93(1), 2.
+ 
+[14] Chen, W., Wilson, J., Tyree, S., Weinberger, K. Q., and Chen, Y. (2016, August). Compressing convolutional neural networks in the frequency domain. In Proceedings of the 22Nd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining, ser. KDD’16 (pp. 1475-1484).
 
 
 % In the unusual situation where you want a paper to appear in the
