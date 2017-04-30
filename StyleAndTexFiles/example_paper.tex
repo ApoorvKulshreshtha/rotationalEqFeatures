@@ -44,7 +44,7 @@
 
 % The \icmltitle you define below is probably too long as a header.
 % Therefore, a short form for the running title is supplied here:
-\icmltitlerunning{Submission and Formatting Instructions for ICML 2017}
+\icmltitlerunning{Effect of Signal Sparsity, Signal Density and Noise Level on Rotational Equivariant Features for Image Classification}
 
 \begin{document} 
 
@@ -117,9 +117,14 @@ Current convolution methods for feature learning are already translation equivar
 \end{abstract} 
 
 \section{Introduction}
+Traditional convolutional networks are the one of the popular methods for Image Classification. Due to various advancements over the years and the availability of more computational power convolutional neural networks have been performing exceptionally well. Although the traditional CNN’s are translational invariant i.e. they can correctly classify an image even if the image is translated along the X or Y axis they are still can’t perform well on images that are rotated. Since in real-world scenarios the images are taken from different angles and they are rotated along different axis’s it is important to be able to detect images which are rotated. Recent research suggests using harmonic convolutions to learn rotational equivariant features. Our paper explores how these harmonic convolutions work and their performance on rotated images. Another issue in classifying images is that the images which are used in various applications have issues like low quality and some unavoidable noise. Hence it is important that if we are using harmonic convolutions they should be able to recognize these images and should not be affected with factors like these. Our research focuses on how to get the best results on rotated images and how factors like noise, image density and image sparsity affect these methods.
+
 %\label{submission}
 
 \section{Related Work}
+In a large number of applications, the image data used will have images that are from different angle and rotated along many axis’s. The paper by Worrall et al. [1], on harmonic Network describes how harmonic convolution based filters can be used for learning rotational equivariant features. We use this approach to study how these harmonic features learnt are affected by various parameters like noise, sparsity, and loss of quality during image compression. Various papers like Dodge and Karam[2] have explored how Image Quality and how it affects the ability of a Neural Network to accurately recognize an image. They have pointed out some interesting conclusions about how the networks are susceptible to factors like noise and blur but are resilient to compressions. Basu et al.[4] has explored the MNSIT dataset with additional Gaussian noise and proposed some changes to the architecture since the traditional ones did that perform well. Rigamonti et al. [3] describes the effect of sparse representation of images on image classification he concludes that at a reasonable noise level sparsity does not affect the classification of images and given the high computation cost in sparse encoding the images it can be avoided. Zabala et al.[4] in their paper in compare the affect of JPEG and JPEG-2000 compression on Image classification and concluded that the type of compression used also plays an important role in classifying images.
+
+In this paper, we aim to bring out the differences in how individual factors in an image affect a traditional CNN differ form a neural network trained using harmonic convolutions. We alter the images by introducing gaussian noise, sparsity and change of quality to see how these factors affect the rotational equivariant features learnt using harmonic convolutions. We use the CIFAR-10 dataset to run our experiments. This dataset contains 60000 32x32 color images in 10 classes, with 6000 images per class
 
 
 \section{Problem Analysis}
@@ -183,360 +188,167 @@ Now, that we have explained the architecture of the harmonic filters, there is o
 
 To reiterate, till now the paper gives the reader a background of how Harmonic Networks work and how they are able to hard-bake rotation equivariance. More reference on this can be found in the paper [GIVE REFERENCE HERE]. From now on, we will discuss our main focus which describes how change in signal sparsity, signal density and noise level affects rotational equivariant features. 
 
-\section{Experiments}
+\section{Parameters Affecting Rotational Equivariance}
+
+\subsection{Noise}
+Most of the image data used in real world applications are noisy in nature. One of the most important applications of image recognition and classification falls under the domain of supervision, intelligence and surveillance and despite the massive leaps in vision technology, the images captured by devices are quite noisy. While there has been good research in the fields of de-noising these images , the effort and computation required outweighs the performance of such methods. 
+Hence, it is quite essential to analyze the effect of noise and its variations on harmonic filters to see if it still retains its accuracy and rotation equivariance . We also framed analytical conclusions based on the theory behind harmonic filters and performed experiments to confirm our understanding.
+
+\textbf{Types of Noise :}
+
+An image could have multiple variations of noise incorporated into it. Some of the most common ones are :
+
+1.	\emph{Gaussian Noise} : 
+
+This is a form of additive noise added independently at each pixel. The added value is independent of signal intensity and is based on a gaussian distribution. One of the major reasons for this form of noise is the thermal noise (Johnson Nyquist Noise). This is one of the most common form of noise that arises due to low background illumination , increased temperature etc.
+
+2.	\emph{Shot Noise} :
+
+This is a noise caused due to exposure fluctuations during the time the image is captured. It is caused different counts of photons sensed at a exposure level. It is dependent on the image intensity and is based on a Poisson distribution. As a result, apart from lower values of intensity its effects mimic Gaussian distribution
+
+3.	\emph{Uniform Noise} : 
+
+It is caused by quantizing pixels of an image to discrete levels .the distribution of such a noise is uniform.
+
+4.	\emph{Periodic Noise} :
+
+This noise appears as a periodic or iterating pattern over the image and is usually caused by electromagnetic interference while capturing the image.
+
+\textbf{Analysis of effect of noise : }
+
+For our analysis, let us assume Gaussian noise . As it is a form of additive noise that is independent of intensity , the variation is induced by the general std deviation of the gaussian distribution the noise is based on . Random noise values are added to the pixels from within the gaussian distribution. 
+
+As we start off with lower values of std deviation , the variation in the values of noise added to the pixels are not significantly large. Hence the original image can still be retrieved from the noisy image as the added noise value is nearly equal with less variation across all the pixels. 
+
+Considering our equation no (TBA), upon normalization, the harmonic filters are still able to get a multiple of the original cross correlation from the cross correlation of the noisy rotated image. The hard baked harmonic filters identify the corresponding pixel values  which although modified by a similar value throughout , are recognizable as their variation is less and hence they still retain their original pattern in the patch even after being scaled up (or down, depending on the noise added). Hence the harmonic filters perform almost as well with noise with low variance as they do without noise.
+
+However, as the variance or std deviation of the gaussian distribution to which the noise belongs to increases , the variation of randomness in the addition of values to the pixels increases . As a result the pattern in the patch that we described earlier is lost i.e the change in pixel values are not constant and vary a lot. This makes it highly difficult for the harmonic filters to retrieve the cross correlation as a multiple of the original cross correlation. The F(r,phi) that we get here might be different from the original noiseless image .Hence it is difficult to classify the representation of the image. Although harmonic convolutions still preserve rotational equivariance, the original pattern of the image is altered and as a result the harmonic filters are not able to classify the image properly leading to lower accuracy.
+
+This property makes the harmonic convolution exhibit similar traits as convolutional filters and hence the results reflect a similar pattern.
+
+\textbf{Experimental Setup :}
+
+To observe the variation in performance of the filters with noise, we chose to experiment with adding varying levels of Gaussian Noise. We used python libraries to introduce both noise and rotation in the images. To produce variation in noise levels, we kept the mean as 0 and increased the standard deviations or variance to observe the effects. 
+
+To provide a basis of comparison for such results, we also ran a similar setup with convolutional neural networks . To further study only the effects of noise on harmonic filters and factoring out the rotational equivariance property , we also ran the experiments with non rotated noisy data on CNNs. The neural network architecture used for both the CNNs was VGG-16 .<Ref>
+The entire experimental analysis was done on CIFAR-10 image dataset with 60k images 
+
+\begin{figure}[t!]
+  \includegraphics[width=\linewidth]{vggAndHarmVsNoise.jpg}
+  \caption{Graph showing trend of accuracy with increase in noise}
+  \label{fig:NoiseGraph}
+\end{figure}
+ 
+\textbf{Experimental Analysis :}
+
+As can be observed from the graph in Fig 3 , the harmonic filters perform well in the lower values of variance in additive noise but steadily decrease as the variance increases .The same trend is observed in neural networks with non-rotated noisy images as well .An interesting point to observe is that the accuracy of harmonic filters is less by a near constant amount with respect to CNNs on non-rotated image across the entire graph. It has to be remembered that while the harmonic convolutions are on the rotated images, this CNN is on non-rotated images. The decreased performance is due to the restricted condition of the harmonic filters which learn parameters for rotation equivariance, however filters for CNN are free to learn and are unrestricted.
+With same kind of data, both rotated and noisy, CNNs perform extremely poor in comparison to harmonic filters
+
+\subsection{Sparsity}
+
+Sparse representations of image data are widely used and recognized in the field of vision and classification experiments. Their increased popularity owing to their suitability as a regularizer for general inverse problems as well as their ease in supportability in high dimensional spaces have made them widely used in almost all image representation problems. The ease in storing and accessing sparse representations also make it highly convenient for their use. With current research showcasing increased performance in certain cases of classification with sparse representations , it is highly essential that we analyze its effect on the harmonic filters to observe the change in rotation equivariance properties.
+
+\textbf{Ways to induce sparsity in images :}
+
+Sparse approximation problem is a highly researched topic with efficient algorithms to solve this problem in place . We list some of the most commonly used algorithms :
+
+1.	\emph{Projected Gradient Descent} : 
+
+This is similar to normal gradient descent where the gradient shows the direction for movement. Since we are looking for a sparse solution, the putative solutions are projected onto the sparse scaffold of k vectors.
+
+2.	\emph{ LASSO }:
+
+This regression analysis method is widely used along with its multiple variations. It solves the L1 norm version of the sparse approximation method . Fused Lasso ,Group Lasso and other variations are used for generating sparsity.
+
+3.	\emph{Proximal Methods} :
+
+Proximal methods including proximal gradient descent is also used for induced sparsity in images .With thresholding /hard thresholding , the sparsity induced by this method forms the basis for many classification experiments.
+
+\textbf{Analysis of Sparsity on images :}
+
+To understand the effect of sparsity, we need to refer to the hard baked filters that are applied on patches of data. These filters as explained in the section above are concentric filters applies on pixels that in turn produce rotation equivariance. This method relies on the pattern of pixels on which the filter is applied. Now as we induce sparsity, some or most of the pixels are reduced to 0. Now, even though the pixels might not be relevant for image classification , this hinders the basic property of the pattern in the patches that the harmonic filters rely on. Hence the hard baked filters which learn in a constrained manner are not able to produce rotation equivariant features. 
+
+We can visualize this with reference to fig.  where the harmonic paths are applied on a patch. Now , if we decrease the values of pixels to 0 , the purpose of the harmonic filter is defeated as with some removed pixel values , the filters do not apply on the similar kind of images as they have been trained on. As a result, in terms of cross correlation , the cross correlation value of the rotated sparse image is not a multiple of the cross correlation of the original image. Hence , the classification isn’t accurate. 
+
+As this adversely affects the filters, the increase in sparsity should cause rapid decrease in performance of the classifier. Now, it can be observed that since these constraints are not present in the normal CNN filters , this massive decrease in performance is not observed in the case of normal convolutions. The constrained filters which produce rotation equivariance are also the cause for the decrease in accuracy of classification for harmonic convolutions .
+
+\textbf{Experimental setup:}
+ 
+The setup is the same as the experiments with noise. The variation in sparsity is produced by Python libraries and the percentage of sparsity is increased to observe the effect. 
+The image data is CIFAR-10 with 60k images.
+Similar to experiments with noise, we have kept two standard observations for comparison – CNN with non-rotated sparse images and one with rotated sparse representations.
+
+\begin{figure}[t!]
+  \includegraphics[width=\linewidth]{vggAndHarmVsSparse.jpg}
+  \caption{Graph showing trend of sparsity with increase in noise}
+  \label{fig:SparseGraph}
+\end{figure}
+
+\textbf{Experimental Results:}
+
+As expected, there is a steep decline in the performance of the harmonic filters on increase in sparsity. With higher levels of sparsity, the filters perform poorly and lose their rotation equivariance property. Further on extremely high values of sparsity it is observed that due to the constrained filters in harmonic networks, the accuracy falls even below CNN on rotated ,sparse images. This stands as a testimony to the adverse effect of sparsity in harmonic networks.
+
+\subsection{Quality}
+
+Images in real world come in varying quality and cannot be expected to contain the same level of details as images used for image processing and classification in image labs in academia. For example, an image captured by a CCTV street camera is bound to be of low quality along with some inherent noise. It is, thus, important to test the efficacy of rotational equivariant features on these real world low quality images. There is yet another incentive for evaluating the performance of these features on images of varying quality. Low quality images are normally of smaller size as compared to their high-quality counterparts and consequently occupy much less disk space. Especially, if the reduction in quality is a consequence of some form of compression, the difference in size would be quite significant. If harmonic filters can be found to perform comparatively well on this image corpus of low quality rotated images, this inherent low size can be exploited to design datasets which are comparatively inexpensive to store and work with. Also the training/learning time can be considerably reduced.
+
+\textbf{Factors affecting image quality :}
+
+There are various ways in which the quality of an image might be affected. We focus on two important compression techniques that affect image quality :
+
+1.	\emph{Compressed Sensing} : 
+
+Compressed sensing or sparse sampling is a signal processing technique for efficiently acquiring and reconstructing a signal. Compressed sensing works by predicting the solutions to underdetermined linear systems of a signal. This is based on the principle that, through optimization, the sparsity of a signal can be exploited to recover it from far fewer samples than required by the Shannon-Nyquist sampling theorem. Compressed sensing builds upon the fundamental fact that we can represent many signals using only a few non-zero coefficients in a suitable basis or dictionary. Nonlinear optimization can then enable recovery of such signals from very few measurements. This allows sampling/capturing images in a sparse or compressed way so as to reduce size. But the low size image sensed in this fashion is also expected to be of low quality.
+
+2.	\emph{ JPEG Compression }:
+
+JPEG is a lossy compression technique for digital images. The key to the JPEG baseline compression process is a mathematical transformation known as the Discrete Cosine Transform (DCT). The DCT is in a class of mathematical operations that includes Fast Fourier Transform (FFT), as well as many others. The basic purpose of these operations is to take a signal and transform it from one type of representation to another. For example, an image is a two-dimensional signal that is perceived by the human visual system. The DCT can be used to convert the signal (spatial information) into numeric data ("frequency" or "spectral" information) so that the image’s information exists in a quantitative form that can be manipulated for compression.The image can then be restored to its original representational space for processing and classification. However, the compression method is lossy, meaning that some original image information is lost and cannot be restored, affecting image quality in the process.
+
+We initially had decided to measure the effect of compressed sensing on rotational equivariant features. However, since after compressed sensing, the image representation space changes we decided, instead, to measure the effect of Discrete Cosine Transform (DCT) on rotational equivariant features using JPEG compression.
+
+
+\textbf{Analysis of image Quality reduction on harmonic
+filters :}
+
+As we attempt to analyze the effect of quality on rotational equivariant harmonic filters, it is useful to remind ourselves how they fundamentally differ from the ad hoc filters in conventional convolution neural networks. As discussed in harmonic networks, the filters are hard baked to belong from the family of circular harmonics. This hard baking of filters, however, constrains the variety of filters that the network can learn. Consequently, the filter diversity of such a network is bound to be lower than the conventional convolution neural networks (CNN). This dearth in filter diversity means that the network needs to learn more filters than the convolutional CNNs, in order to perform equally accurately whilst being rotationally equivariant.
+
+As we observed in the sections above, this constraint on filter diversity adversely affects its performance as image sparsity and noise increases. This can also be an issue when the inherent quality of the input image is quite high and hence the pixel gradient is quite steep. However, low quality images have low pixel gradient. This means that, as the quality of the image reduces, assuming that its resolution remains constant, the pixel that are adjacent to each other start taking up very similar intensity levels. This means that a network can get away with learning comparatively fewer different filters on such images. Consequently, CNNs are found to learn redundant filters on such images. This in turn should suit a harmonic network with low filter diversity. Unlike, sparsity and noise, the performance of a harmonic network should not be adversely affected as image quality decreases. Thus, we expect harmonic filters to mimic the performance of conventional CNNs whereby its accuracy plateaus as image quality keeps on reducing. It is normal for CNNs to achieve this behavior as they never are constrained in the way and types of filters they are allowed to learn and hence can adjust to image quality by learning suitable filters.
+
+This assumption, however, might not remain true as the image quality continues dropping below a certain threshold. We hypothesize, the presence of an image quality threshold below which the image is rendered indistinguishable and further reducing its quality should affect the performance of both conventional CNNs and harmonic filters much more rapidly. Below this quality threshold, the image would not have enough diverse information in its representation to be suitable to be used for the task of image classification. We now proceed to back our hypothesis with experimental evidence.
+
+\textbf{Experimental setup:}
+ 
+The setup environment remains the same. All experiments are conducted for 3 settings as usual, harmonic network with rotated images, CNN with rotates images and CNN on non-rotated images. The image data set used is CIFAR10, having 10 classes of images and about 60k images in total each having resolution of 32x32. The data is divided to have about 46k images in the training set, and 7k images each in the validation and test sets. The image quality is reduced by applying JPEG compression using the Python Imaging Library (PIL). PIL was also employed to randomly rotate images to feed into the rotated image configurations.
+
+\begin{figure}[t!]
+  \includegraphics[width=\linewidth]{vggAndHarmVsquality.png}
+  \caption{Graph showing trend of accuracy with decrease in image quality}
+  \label{fig:SparseGraph}
+\end{figure}
+
+\textbf{Experimental Results:}
+
+As hypothesized, all three configurations show similar behavior. As quality reduces from a 100 percent, the accuracy of all three configurations only plateaus, reducing by comparatively lower amounts from the initial starting point. The lower threshold for image quality is found to be in the region of 20 percent, reducing the image quality below which, induces a steep decrease in the classification accuracy of all three configurations. However, as with all previous experiments, harmonic networks outperform its CNN counterpart by a considerable margin for the rotated image configuration.
+
 
 \section{Conclusion}
 
+We’d like to conclude by saying that rotational equivariant filters hard baked from the family of circular harmonics are a significant upgrade on the unconstrained and ad hoc filters learnt by conventional CNNs. While their remains certain concerns regarding the cost of scaling networks with harmonic filter in order to increase filter diversity, their efficacy over classifying rotated images warrants further research and work with them. They perform significantly better on rotated images than their CNN counterparts in all experimental settings. Unless your domain involves dealing with highly sparse images, harmonic filters remain prime candidates to train rotational equivariant networks. Their ability to mimic CNNs immunity to quality reduction means they can also be used for classifying low quality rotated images.
+
 \section{Future Work}
+Our research clearly points out how various factors of an image like image sparsity, noise level and quality affect traditional convolutional networks in ways that do not hold true for the rotation equivariant networks. All the factors tested in this paper make sure that the images space does not change, we would like to work on how lower dimensional feature representations like compressed sensing and sketching affect harmoncic convolutions. Lower dimensional representations can also speed up the time taken to train the network and save on essential resources. Hence it would be interesting to see the tradeoffs between the use of lower dimensional representations for learning rotational equivariant features and the loss of accuracy
 
 \section{References}
+[1] Worrall, D. E., Garbin, S. J., Turmukhambetov, D., and Brostow, G. J. (2016). Harmonic Networks: Deep Translation and Rotation Equivariance. arXiv preprint arXiv:1612.04642.
 
-We will continue the ICML tradition in which the authors are given the
-option of providing a short reaction to the initial reviews. These
-reactions will be taken into account in the discussion among the
-reviewers and area chairs.
+[2] Dodge, S., and Karam, L. (2016, June). Understanding how image quality affects deep neural networks. In Quality of Multimedia Experience (QoMEX), 2016 Eighth International Conference on (pp. 1-6). IEEE.
 
-\subsection{Submitting Final Camera-Ready Copy}
+[3] Rigamonti, R., Brown, M. A., and Lepetit, V. (2011, June). Are sparse representations really relevant for image classification?. In Computer Vision and Pattern Recognition (CVPR), 2011 IEEE Conference on (pp. 1545-1552). IEEE.
 
-The final versions of papers accepted for publication should follow the
-same format and naming convention as initial submissions, except of
-course that the normal author information (names and affiliations)
-should be given.  See Section~\ref{final author} for details of how to
-format this.
+[4] Zabala, A., Pons, X., Díaz-Delgado, R., García, F., Aulí-Llinàs, F., and Serra-Sagristà, J. (2006, July). Effects of JPEG and JPEG2000 lossy compression on remote sensing image classification for mapping crops and forest areas. In Geoscience and Remote Sensing Symposium, 2006. IGARSS 2006. IEEE International Conference on (pp. 790-793). IEEE.
 
-The footnote, ``Preliminary work.  Under review by the International
-Conference on Machine Learning (ICML).  Do not distribute.'' must be
-modified to ``\textit{Proceedings of the
-$\mathit{34}^{th}$ International Conference on Machine Learning},
-Sydney, Australia, 2017.  JMLR: W\&CP. 
-Copyright 2017 by the author(s).''
 
-For those using the \textbf{\LaTeX} style file, simply change
-$\mathtt{\backslash usepackage\{icml2017\}}$ to 
 
-$$\mathtt{\backslash usepackage[accepted]\{icml2017\}}$$
-
-\noindent
-Authors using \textbf{Word} must edit the
-footnote on the first page of the document themselves.
-
-Camera-ready copies should have the title of the paper as running head
-on each page except the first one.  The running title consists of a
-single line centered above a horizontal rule which is $1$ point thick.
-The running head should be centered, bold and in $9$ point type.  The
-rule should be $10$ points above the main text.  For those using the
-\textbf{\LaTeX} style file, the original title is automatically set as running
-head using the {\tt fancyhdr} package which is included in the ICML
-2017 style file package.  In case that the original title exceeds the
-size restrictions, a shorter form can be supplied by using
-
-\verb|\icmltitlerunning{...}|
-
-just before $\mathtt{\backslash begin\{document\}}$.
-Authors using \textbf{Word} must edit the header of the document themselves.
-
-\section{Format of the Paper} 
- 
-All submissions must follow the same format to ensure the printer can
-reproduce them without problems and to let readers more easily find
-the information that they desire.
-
-\subsection{Length and Dimensions}
-
-Papers must not exceed eight (8) pages, including all figures, tables,
-and appendices, but excluding references and acknowledgements. When references and acknowledgements are included,
-the paper must not exceed ten (10) pages.
-Acknowledgements should be limited to grants and people who contributed to the paper.
-Any submission that exceeds 
-this page limit or that diverges significantly from the format specified 
-herein will be rejected without review.
-
-The text of the paper should be formatted in two columns, with an
-overall width of 6.75 inches, height of 9.0 inches, and 0.25 inches
-between the columns. The left margin should be 0.75 inches and the top
-margin 1.0 inch (2.54~cm). The right and bottom margins will depend on
-whether you print on US letter or A4 paper, but all final versions
-must be produced for US letter size.
-
-The paper body should be set in 10~point type with a vertical spacing
-of 11~points. Please use Times typeface throughout the text.
-
-\subsection{Title}
-
-The paper title should be set in 14~point bold type and centered
-between two horizontal rules that are 1~point thick, with 1.0~inch
-between the top rule and the top edge of the page. Capitalize the
-first letter of content words and put the rest of the title in lower
-case.
-
-\subsection{Author Information for Submission}
-\label{author info}
-
-To facilitate blind review, author information must not appear.  If
-you are using \LaTeX\/ and the \texttt{icml2017.sty} file, you may use
-\verb+\icmlauthor{...}+ to specify authors.  The author information
-will simply not be printed until {\tt accepted} is an argument to the
-style file. Submissions that include the author information will not
-be reviewed.
-
-\subsubsection{Self-Citations}
-
-If your are citing published papers for which you are an author, refer
-to yourself in the third person. In particular, do not use phrases
-that reveal your identity (e.g., ``in previous work \cite{langley00}, we 
-have shown \ldots'').
-
-Do not anonymize citations in the reference section by removing or
-blacking out author names. The only exception are manuscripts that are
-not yet published (e.g. under submission). If you choose to refer to
-such unpublished manuscripts \cite{anonymous}, anonymized copies have 
-to be submitted
-as Supplementary Material via CMT. However, keep in mind that an ICML
-paper should be self contained and should contain sufficient detail
-for the reviewers to evaluate the work. In particular, reviewers are
-not required to look a the Supplementary Material when writing their
-review.
-
-\subsubsection{Camera-Ready Author Information}
-\label{final author}
-
-If a paper is accepted, a final camera-ready copy must be prepared.
-%
-For camera-ready papers, author information should start 0.3~inches
-below the bottom rule surrounding the title. The authors' names should
-appear in 10~point bold type, electronic mail addresses in 10~point
-small capitals, and physical addresses in ordinary 10~point type.
-Each author's name should be flush left, whereas the email address
-should be flush right on the same line. The author's physical address
-should appear flush left on the ensuing line, on a single line if
-possible. If successive authors have the same affiliation, then give
-their physical address only once.
-
-A sample file (in PDF) with author names is included in the ICML2017 
-style file package.
-
-\subsection{Abstract}
-
-The paper abstract should begin in the left column, 0.4~inches below
-the final address. The heading `Abstract' should be centered, bold,
-and in 11~point type. The abstract body should use 10~point type, with
-a vertical spacing of 11~points, and should be indented 0.25~inches
-more than normal on left-hand and right-hand margins. Insert
-0.4~inches of blank space after the body. Keep your abstract brief and 
-self-contained,
-limiting it to one paragraph and roughly 4--6 sentences.  Gross violations will require correction at the camera-ready phase.
-
-\subsection{Partitioning the Text} 
-
-You should organize your paper into sections and paragraphs to help
-readers place a structure on the material and understand its
-contributions.
-
-\subsubsection{Sections and Subsections}
-
-Section headings should be numbered, flush left, and set in 11~pt bold
-type with the content words capitalized. Leave 0.25~inches of space
-before the heading and 0.15~inches after the heading.
-
-Similarly, subsection headings should be numbered, flush left, and set
-in 10~pt bold type with the content words capitalized. Leave
-0.2~inches of space before the heading and 0.13~inches afterward.
-
-Finally, subsubsection headings should be numbered, flush left, and
-set in 10~pt small caps with the content words capitalized. Leave
-0.18~inches of space before the heading and 0.1~inches after the
-heading. 
-
-Please use no more than three levels of headings.
-
-\subsubsection{Paragraphs and Footnotes}
-
-Within each section or subsection, you should further partition the
-paper into paragraphs. Do not indent the first line of a given
-paragraph, but insert a blank line between succeeding ones.
- 
-You can use footnotes\footnote{For the sake of readability, footnotes
-should be complete sentences.} to provide readers with additional
-information about a topic without interrupting the flow of the paper. 
-Indicate footnotes with a number in the text where the point is most
-relevant. Place the footnote in 9~point type at the bottom of the
-column in which it appears. Precede the first footnote in a column
-with a horizontal rule of 0.8~inches.\footnote{Multiple footnotes can
-appear in each column, in the same order as they appear in the text,
-but spread them across columns and pages if possible.}
-
-\begin{figure}[ht]
-\vskip 0.2in
-\begin{center}
-\centerline{\includegraphics[width=\columnwidth]{icml_numpapers}}
-\caption{Historical locations and number of accepted papers for International
-  Machine Learning Conferences (ICML 1993 -- ICML 2008) and
-  International Workshops on Machine Learning (ML 1988 -- ML
-  1992). At the time this figure was produced, the number of
-  accepted papers for ICML 2008 was unknown and instead estimated.}
-\label{icml-historical}
-\end{center}
-\vskip -0.2in
-\end{figure} 
-
-\subsection{Figures}
- 
-You may want to include figures in the paper to help readers visualize
-your approach and your results. Such artwork should be centered,
-legible, and separated from the text. Lines should be dark and at
-least 0.5~points thick for purposes of reproduction, and text should
-not appear on a gray background.
-
-Label all distinct components of each figure. If the figure takes the
-form of a graph, then give a name for each axis and include a legend
-that briefly describes each curve. Do not include a title inside the
-figure; instead, the caption should serve this function.
-
-Number figures sequentially, placing the figure number and caption
-{\it after\/} the graphics, with at least 0.1~inches of space before
-the caption and 0.1~inches after it, as in
-Figure~\ref{icml-historical}.  The figure caption should be set in
-9~point type and centered unless it runs two or more lines, in which
-case it should be flush left.  You may float figures to the top or
-bottom of a column, and you may set wide figures across both columns
-(use the environment {\tt figure*} in \LaTeX), but always place
-two-column figures at the top or bottom of the page.
-
-\subsection{Algorithms}
-
-If you are using \LaTeX, please use the ``algorithm'' and ``algorithmic'' 
-environments to format pseudocode. These require 
-the corresponding stylefiles, algorithm.sty and 
-algorithmic.sty, which are supplied with this package. 
-Algorithm~\ref{alg:example} shows an example. 
-
-\begin{algorithm}[tb]
-   \caption{Bubble Sort}
-   \label{alg:example}
-\begin{algorithmic}
-   \STATE {\bfseries Input:} data $x_i$, size $m$
-   \REPEAT
-   \STATE Initialize $noChange = true$.
-   \FOR{$i=1$ {\bfseries to} $m-1$}
-   \IF{$x_i > x_{i+1}$} 
-   \STATE Swap $x_i$ and $x_{i+1}$
-   \STATE $noChange = false$
-   \ENDIF
-   \ENDFOR
-   \UNTIL{$noChange$ is $true$}
-\end{algorithmic}
-\end{algorithm}
- 
-\subsection{Tables} 
- 
-You may also want to include tables that summarize material. Like 
-figures, these should be centered, legible, and numbered consecutively. 
-However, place the title {\it above\/} the table with at least 
-0.1~inches of space before the title and the same after it, as in 
-Table~\ref{sample-table}. The table title should be set in 9~point 
-type and centered unless it runs two or more lines, in which case it
-should be flush left.
-
-% Note use of \abovespace and \belowspace to get reasonable spacing 
-% above and below tabular lines. 
-
-\begin{table}[t]
-\caption{Classification accuracies for naive Bayes and flexible 
-Bayes on various data sets.}
-\label{sample-table}
-\vskip 0.15in
-\begin{center}
-\begin{small}
-\begin{sc}
-\begin{tabular}{lcccr}
-\hline
-\abovespace\belowspace
-Data set & Naive & Flexible & Better? \\
-\hline
-\abovespace
-Breast    & 95.9$\pm$ 0.2& 96.7$\pm$ 0.2& $\surd$ \\
-Cleveland & 83.3$\pm$ 0.6& 80.0$\pm$ 0.6& $\times$\\
-Glass2    & 61.9$\pm$ 1.4& 83.8$\pm$ 0.7& $\surd$ \\
-Credit    & 74.8$\pm$ 0.5& 78.3$\pm$ 0.6&         \\
-Horse     & 73.3$\pm$ 0.9& 69.7$\pm$ 1.0& $\times$\\
-Meta      & 67.1$\pm$ 0.6& 76.5$\pm$ 0.5& $\surd$ \\
-Pima      & 75.1$\pm$ 0.6& 73.9$\pm$ 0.5&         \\
-\belowspace
-Vehicle   & 44.9$\pm$ 0.6& 61.5$\pm$ 0.4& $\surd$ \\
-\hline
-\end{tabular}
-\end{sc}
-\end{small}
-\end{center}
-\vskip -0.1in
-\end{table}
-
-Tables contain textual material that can be typeset, as contrasted 
-with figures, which contain graphical material that must be drawn. 
-Specify the contents of each row and column in the table's topmost
-row. Again, you may float tables to a column's top or bottom, and set
-wide tables across both columns, but place two-column tables at the
-top or bottom of the page.
- 
-\subsection{Citations and References} 
-
-Please use APA reference format regardless of your formatter
-or word processor. If you rely on the \LaTeX\/ bibliographic 
-facility, use {\tt natbib.sty} and {\tt icml2017.bst} 
-included in the style-file package to obtain this format.
-
-Citations within the text should include the authors' last names and
-year. If the authors' names are included in the sentence, place only
-the year in parentheses, for example when referencing Arthur Samuel's
-pioneering work \yrcite{Samuel59}. Otherwise place the entire
-reference in parentheses with the authors and year separated by a
-comma \cite{Samuel59}. List multiple references separated by
-semicolons \cite{kearns89,Samuel59,mitchell80}. Use the `et~al.'
-construct only for citations with three or more authors or after
-listing all authors to a publication in an earlier reference \cite{MachineLearningI}.
-
-Authors should cite their own work in the third person
-in the initial version of their paper submitted for blind review.
-Please refer to Section~\ref{author info} for detailed instructions on how to
-cite your own papers.
-
-Use an unnumbered first-level section heading for the references, and 
-use a hanging indent style, with the first line of the reference flush
-against the left margin and subsequent lines indented by 10 points. 
-The references at the end of this document give examples for journal
-articles \cite{Samuel59}, conference publications \cite{langley00}, book chapters \cite{Newell81}, books \cite{DudaHart2nd}, edited volumes \cite{MachineLearningI}, 
-technical reports \cite{mitchell80}, and dissertations \cite{kearns89}. 
-
-Alphabetize references by the surnames of the first authors, with
-single author entries preceding multiple author entries. Order
-references for the same authors by year of publication, with the
-earliest first. Make sure that each reference includes all relevant
-information (e.g., page numbers).
-
-\subsection{Software and Data}
-
-We strongly encourage the publication of software and data with the
-camera-ready version of the paper whenever appropriate.  This can be
-done by including a URL in the camera-ready copy.  However, do not
-include URLs that reveal your institution or identity in your
-submission for review.  Instead, provide an anonymous URL or upload
-the material as ``Supplementary Material'' into the CMT reviewing
-system.  Note that reviewers are not required to look a this material
-when writing their review.
-
-% Acknowledgements should only appear in the accepted version. 
-\section*{Acknowledgements} 
- 
-\textbf{Do not} include acknowledgements in the initial version of
-the paper submitted for blind review.
-
-If a paper is accepted, the final camera-ready version can (and
-probably should) include acknowledgements. In this case, please
-place such acknowledgements in an unnumbered section at the
-end of the paper. Typically, this will include thanks to reviewers
-who gave useful comments, to colleagues who contributed to the ideas, 
-and to funding agencies and corporate sponsors that provided financial 
-support.  
 
 
 % In the unusual situation where you want a paper to appear in the
