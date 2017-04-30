@@ -193,19 +193,19 @@ Hence, it is quite essential to analyze the effect of noise and its variations o
 
 An image could have multiple variations of noise incorporated into it. Some of the most common ones are :
 
-1.	Gaussian Noise : 
+1.	\emph{Gaussian Noise} : 
 
 This is a form of additive noise added independently at each pixel. The added value is independent of signal intensity and is based on a gaussian distribution. One of the major reasons for this form of noise is the thermal noise (Johnson Nyquist Noise). This is one of the most common form of noise that arises due to low background illumination , increased temperature etc.
 
-2.	Shot Noise :
+2.	\emph{Shot Noise} :
 
 This is a noise caused due to exposure fluctuations during the time the image is captured. It is caused different counts of photons sensed at a exposure level. It is dependent on the image intensity and is based on a Poisson distribution. As a result, apart from lower values of intensity its effects mimic Gaussian distribution
 
-3.	Uniform Noise : 
+3.	\emph{Uniform Noise} : 
 
 It is caused by quantizing pixels of an image to discrete levels .the distribution of such a noise is uniform.
 
-4.	Periodic Noise :
+4.	\emph{Periodic Noise} :
 
 This noise appears as a periodic or iterating pattern over the image and is usually caused by electromagnetic interference while capturing the image.
 
@@ -247,15 +247,15 @@ Sparse representations of image data are widely used and recognized in the field
 
 Sparse approximation problem is a highly researched topic with efficient algorithms to solve this problem in place . We list some of the most commonly used algorithms :
 
-1.	Projected Gradient Descent : 
+1.	\emph{Projected Gradient Descent} : 
 
 This is similar to normal gradient descent where the gradient shows the direction for movement. Since we are looking for a sparse solution, the putative solutions are projected onto the sparse scaffold of k vectors.
 
-2.	 LASSO :
+2.	\emph{ LASSO }:
 
 This regression analysis method is widely used along with its multiple variations. It solves the L1 norm version of the sparse approximation method . Fused Lasso ,Group Lasso and other variations are used for generating sparsity.
 
-3.	Proximal Methods :
+3.	\emph{Proximal Methods} :
 
 Proximal methods including proximal gradient descent is also used for induced sparsity in images .With thresholding /hard thresholding , the sparsity induced by this method forms the basis for many classification experiments.
 
