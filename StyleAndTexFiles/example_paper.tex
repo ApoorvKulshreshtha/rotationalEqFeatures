@@ -191,7 +191,7 @@ To reiterate, till now the paper gives the reader a background of how Harmonic N
 \section{Parameters Affecting Rotational Equivariance}
 
 \subsection{Noise}
-Most of the image data used in real world applications are noisy in nature. One of the most important applications of image recognition and classification falls under the domain of supervision, intelligence and surveillance and despite the massive leaps in vision technology, the images captured by devices are quite noisy. While there has been good research in the fields of de-noising these images [5] , the effort and computation required outweighs the performance of such methods. 
+Most of the image data used in real world applications are noisy in nature. One of the most important applications of image recognition and classification falls under the domain of supervision, intelligence and surveillance and despite the massive leaps in vision technology, the images captured by devices are quite noisy. While there has been good research in the fields of de-noising these images , the effort and computation required outweighs the performance of such methods. 
 Hence, it is quite essential to analyze the effect of noise and its variations on harmonic filters to see if it still retains its accuracy and rotation equivariance . We also framed analytical conclusions based on the theory behind harmonic filters and performed experiments to confirm our understanding.
 
 \textbf{Types of Noise :}
@@ -200,11 +200,11 @@ An image could have multiple variations of noise incorporated into it. Some of t
 
 1.	\emph{Gaussian Noise} : 
 
-This is a form of additive noise added independently at each pixel. The added value is independent of signal intensity and is based on a gaussian distribution. One of the major reasons for this form of noise is the thermal noise (Johnson Nyquist Noise) [6]. This is one of the most common form of noise that arises due to low background illumination , increased temperature etc.
+This is a form of additive noise added independently at each pixel. The added value is independent of signal intensity and is based on a gaussian distribution. One of the major reasons for this form of noise is the thermal noise (Johnson Nyquist Noise). This is one of the most common form of noise that arises due to low background illumination , increased temperature etc.
 
 2.	\emph{Shot Noise} :
 
-This is a noise caused due to exposure fluctuations during the time the image is captured. It is caused different counts of photons sensed at a exposure level [7]. It is dependent on the image intensity and is based on a Poisson distribution. As a result, apart from lower values of intensity its effects mimic Gaussian distribution
+This is a noise caused due to exposure fluctuations during the time the image is captured. It is caused different counts of photons sensed at a exposure level. It is dependent on the image intensity and is based on a Poisson distribution. As a result, apart from lower values of intensity its effects mimic Gaussian distribution
 
 3.	\emph{Uniform Noise} : 
 
@@ -216,11 +216,11 @@ This noise appears as a periodic or iterating pattern over the image and is usua
 
 \textbf{Analysis of effect of noise : }
 
-For our analysis, let us assume Gaussian noise . As it is a form of additive noise [8] that is independent of intensity , the variation is induced by the general std deviation of the gaussian distribution the noise is based on . Random noise values are added to the pixels from within the gaussian distribution. 
+For our analysis, let us assume Gaussian noise . As it is a form of additive noise that is independent of intensity , the variation is induced by the general std deviation of the gaussian distribution the noise is based on . Random noise values are added to the pixels from within the gaussian distribution. 
 
 As we start off with lower values of std deviation , the variation in the values of noise added to the pixels are not significantly large. Hence the original image can still be retrieved from the noisy image as the added noise value is nearly equal with less variation across all the pixels. 
 
-Considering our equation in subsection 3.1, upon normalization, the harmonic filters are still able to get a multiple of the original cross correlation from the cross correlation of the noisy rotated image. The hard baked harmonic filters identify the corresponding pixel values  which although modified by a similar value throughout , are recognizable as their variation is less and hence they still retain their original pattern in the patch even after being scaled up (or down, depending on the noise added). Hence the harmonic filters perform almost as well with noise with low variance as they do without noise.
+Considering our equation no (TBA), upon normalization, the harmonic filters are still able to get a multiple of the original cross correlation from the cross correlation of the noisy rotated image. The hard baked harmonic filters identify the corresponding pixel values  which although modified by a similar value throughout , are recognizable as their variation is less and hence they still retain their original pattern in the patch even after being scaled up (or down, depending on the noise added). Hence the harmonic filters perform almost as well with noise with low variance as they do without noise.
 
 However, as the variance or std deviation of the gaussian distribution to which the noise belongs to increases , the variation of randomness in the addition of values to the pixels increases . As a result the pattern in the patch that we described earlier is lost i.e the change in pixel values are not constant and vary a lot. This makes it highly difficult for the harmonic filters to retrieve the cross correlation as a multiple of the original cross correlation. The F(r,phi) that we get here might be different from the original noiseless image .Hence it is difficult to classify the representation of the image. Although harmonic convolutions still preserve rotational equivariance, the original pattern of the image is altered and as a result the harmonic filters are not able to classify the image properly leading to lower accuracy.
 
@@ -230,7 +230,7 @@ This property makes the harmonic convolution exhibit similar traits as convoluti
 
 To observe the variation in performance of the filters with noise, we chose to experiment with adding varying levels of Gaussian Noise. We used python libraries to introduce both noise and rotation in the images. To produce variation in noise levels, we kept the mean as 0 and increased the standard deviations or variance to observe the effects. 
 
-To provide a basis of comparison for such results, we also ran a similar setup with convolutional neural networks . To further study only the effects of noise on harmonic filters and factoring out the rotational equivariance property , we also ran the experiments with non rotated noisy data on CNNs. The neural network architecture used for both the CNNs was VGG-16.
+To provide a basis of comparison for such results, we also ran a similar setup with convolutional neural networks . To further study only the effects of noise on harmonic filters and factoring out the rotational equivariance property , we also ran the experiments with non rotated noisy data on CNNs. The neural network architecture used for both the CNNs was VGG-16 .<Ref>
 The entire experimental analysis was done on CIFAR-10 image dataset with 60k images 
 
 \begin{figure}[t!]
@@ -241,24 +241,24 @@ The entire experimental analysis was done on CIFAR-10 image dataset with 60k ima
  
 \textbf{Experimental Analysis :}
 
-As can be observed from the graph in Fig 4 , the harmonic filters perform well in the lower values of variance in additive noise but steadily decrease as the variance increases .The same trend is observed in neural networks with non-rotated noisy images as well .An interesting point to observe is that the accuracy of harmonic filters is less by a near constant amount with respect to CNNs on non-rotated image across the entire graph. It has to be remembered that while the harmonic convolutions are on the rotated images, this CNN is on non-rotated images. The decreased performance is due to the restricted condition of the harmonic filters which learn parameters for rotation equivariance, however filters for CNN are free to learn and are unrestricted.
+As can be observed from the graph in Fig 3 , the harmonic filters perform well in the lower values of variance in additive noise but steadily decrease as the variance increases .The same trend is observed in neural networks with non-rotated noisy images as well .An interesting point to observe is that the accuracy of harmonic filters is less by a near constant amount with respect to CNNs on non-rotated image across the entire graph. It has to be remembered that while the harmonic convolutions are on the rotated images, this CNN is on non-rotated images. The decreased performance is due to the restricted condition of the harmonic filters which learn parameters for rotation equivariance, however filters for CNN are free to learn and are unrestricted.
 With same kind of data, both rotated and noisy, CNNs perform extremely poor in comparison to harmonic filters
 
 \subsection{Sparsity}
 
-Sparse representations of image data are widely used and recognized in the field of vision and classification experiments. Their increased popularity owing to their suitability as a regularizer for general inverse problems as well as their ease in supportability in high dimensional spaces have made them widely used in almost all image representation problems. The ease in storing and accessing sparse representations also make it highly convenient for their use. With current research showcasing increased performance in certain cases of classification with sparse representations [9] , it is highly essential that we analyze its effect on the harmonic filters to observe the change in rotation equivariance properties.
+Sparse representations of image data are widely used and recognized in the field of vision and classification experiments. Their increased popularity owing to their suitability as a regularizer for general inverse problems as well as their ease in supportability in high dimensional spaces have made them widely used in almost all image representation problems. The ease in storing and accessing sparse representations also make it highly convenient for their use. With current research showcasing increased performance in certain cases of classification with sparse representations , it is highly essential that we analyze its effect on the harmonic filters to observe the change in rotation equivariance properties.
 
 \textbf{Ways to induce sparsity in images :}
 
 Sparse approximation problem is a highly researched topic with efficient algorithms to solve this problem in place . We list some of the most commonly used algorithms :
 
-1.	\emph{Projected Gradient Descent} [10]: 
+1.	\emph{Projected Gradient Descent} : 
 
 This is similar to normal gradient descent where the gradient shows the direction for movement. Since we are looking for a sparse solution, the putative solutions are projected onto the sparse scaffold of k vectors.
 
-2.	\emph{ LASSO } [11] :
+2.	\emph{ LASSO }:
 
-This regression analysis method is widely used along with its multiple variations. It solves the L1 norm version of the sparse approximation method . Fused Lasso ,Group Lasso [12] and other variations are used for generating sparsity.
+This regression analysis method is widely used along with its multiple variations. It solves the L1 norm version of the sparse approximation method . Fused Lasso ,Group Lasso and other variations are used for generating sparsity.
 
 3.	\emph{Proximal Methods} :
 
@@ -268,7 +268,7 @@ Proximal methods including proximal gradient descent is also used for induced sp
 
 To understand the effect of sparsity, we need to refer to the hard baked filters that are applied on patches of data. These filters as explained in the section above are concentric filters applies on pixels that in turn produce rotation equivariance. This method relies on the pattern of pixels on which the filter is applied. Now as we induce sparsity, some or most of the pixels are reduced to 0. Now, even though the pixels might not be relevant for image classification , this hinders the basic property of the pattern in the patches that the harmonic filters rely on. Hence the hard baked filters which learn in a constrained manner are not able to produce rotation equivariant features. 
 
-We can visualize this with reference to fig 5.  where the harmonic paths are applied on a patch. Now , if we decrease the values of pixels to 0 , the purpose of the harmonic filter is defeated as with some removed pixel values , the filters do not apply on the similar kind of images as they have been trained on. As a result, in terms of cross correlation , the cross correlation value of the rotated sparse image is not a multiple of the cross correlation of the original image. Hence , the classification isn’t accurate. 
+We can visualize this with reference to fig.  where the harmonic paths are applied on a patch. Now , if we decrease the values of pixels to 0 , the purpose of the harmonic filter is defeated as with some removed pixel values , the filters do not apply on the similar kind of images as they have been trained on. As a result, in terms of cross correlation , the cross correlation value of the rotated sparse image is not a multiple of the cross correlation of the original image. Hence , the classification isn’t accurate. 
 
 As this adversely affects the filters, the increase in sparsity should cause rapid decrease in performance of the classifier. Now, it can be observed that since these constraints are not present in the normal CNN filters , this massive decrease in performance is not observed in the case of normal convolutions. The constrained filters which produce rotation equivariance are also the cause for the decrease in accuracy of classification for harmonic convolutions .
 
