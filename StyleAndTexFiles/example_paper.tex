@@ -122,7 +122,7 @@ Traditional convolutional networks are one of the popular methods for Image Clas
 %\label{submission}
 
 \section{Related Work}
-In a large number of applications, the image data used will have images that are from different angle and rotated along many axis’s. The paper by Worrall et al. [1], on harmonic Network describes how harmonic convolution based filters can be used for learning rotational equivariant features. We use this approach to study how these harmonic features learnt are affected by various parameters like noise, sparsity, and loss of quality during image compression. Various papers like Dodge and Karam[2] have explored how Image Quality and how it affects the ability of a Neural Network to accurately recognize an image. They have pointed out some interesting conclusions about how the networks are susceptible to factors like noise and blur but are resilient to compressions. Basu et al.[4] has explored the MNSIT dataset with additional Gaussian noise and proposed some changes to the architecture since the traditional ones did that perform well. Rigamonti et al. [3] describes the effect of sparse representation of images on image classification he concludes that at a reasonable noise level sparsity does not affect the classification of images and given the high computation cost in sparse encoding the images it can be avoided. Zabala et al.[4] in their paper in compare the affect of JPEG and JPEG-2000 compression on Image classification and concluded that the type of compression used also plays an important role in classifying images.
+In a large number of applications, the image data used will have images that are from different angle and rotated along many axis’s. The paper by Worrall et al. [1], on harmonic Network describes how harmonic convolution based filters can be used for learning rotational equivariant features. We use this approach to study how these harmonic features learnt are affected by various parameters like noise, sparsity, and loss of quality during image compression. Various papers like Dodge and Karam[2] have explored how Image Quality and how it affects the ability of a Neural Network to accurately recognize an image. They have pointed out some interesting conclusions about how the networks are susceptible to factors like noise and blur but are resilient to compressions. Basu et al.[4] has explored the MNIST dataset with additional Gaussian noise and proposed some changes to the architecture since the traditional ones did that perform well. Rigamonti et al. [3] describes the effect of sparse representation of images on image classification he concludes that at a reasonable noise level sparsity does not affect the classification of images and given the high computation cost in sparse encoding the images it can be avoided. Zabala et al.[4] in their paper in compare the affect of JPEG and JPEG-2000 compression on Image classification and concluded that the type of compression used also plays an important role in classifying images.
 
 In this paper, we aim to bring out the differences in how individual factors in an image affect a traditional CNN differ form a neural network trained using harmonic convolutions. We alter the images by introducing gaussian noise, sparsity and change of quality to see how these factors affect the rotational equivariant features learnt using harmonic convolutions. We use the CIFAR-10 dataset to run our experiments. This dataset contains 60000 32x32 color images in 10 classes, with 6000 images per class
 
@@ -130,8 +130,15 @@ In this paper, we aim to bring out the differences in how individual factors in 
 \section{Problem Analysis}
 Harmonic Convolutions hard bake 360 degree rotational equivariance into their feature representations by restricting the convolution filters to be from the circular harmonics family. In the following sections, we will discuss the properties of circular harmonics which help the network learn rotation equivariant features. To reiterate, rotational equivariance implies that a particular rotation in input image produces a proportionate rotation in feature maps.
 
+\begin{figure}[t!]
+  \includegraphics[width=\linewidth]{PolarImage.png}
+  \caption{An image describing polar co-ordinates with image center as origin}
+  \label{fig:polarCoord}
+\end{figure}
+
+
 \subsection{Circular Harmonics Equivariance}
-We describe an image using polar co-ordinates r and $\phi$ as F(r , $\phi$). This can be understood better by looking at Figure \ref{fig:polarCoord}. Please note that this is just to depict the polar co-ordinates of a filter. In actual setting, the filter will be applied patch-wise to the image and therefore, a single image patch will be described using this method. \\
+We describe an image using polar co-ordinates r and $\phi$ as F(r , $\phi$). This can be understood better by looking at Figure 1. Please note that this is just to depict the polar co-ordinates of a filter. In actual setting, the filter will be applied patch-wise to the image and therefore, a single image patch will be described using this method. \\
 We will now show that there exists a filter $W_m$ such that the cross-correlation of F with $W_m$ yields a rotationally equivariant feature map. This condition is satisfied when $W_m$ is a circular harmonic of the form $W_m$ = R(r) $e^{i(m \phi + \beta)}$ for some m belonging to integers. Consider the rotation of original image by $\theta$ which leads to a new image F(r, $\phi - \theta$). The cross-correlation for the rotated image is
 
 \vspace{-0.1cm}
@@ -151,7 +158,14 @@ When rotation $\theta$ = 0, then $\phi$ = $\phi$'. Therefore, the above equation
 $\hspace{75pt}$ = $e^{i m \theta}$ $\int$ R(r) $e^{i(m \phi + \beta)}$ F(r, $\phi$) dr d$\phi$ \\ \vspace{0.1cm}
 $\hspace{10pt}$ = $e^{i m \theta}$ [W * F(r, $\phi$)] 
 \end{center}
-Hence, we observe that the cross-correlation of the rotated signal F(r, $\phi - \theta$) with harmonic filter $W_m$ = R(r) $e^{i(m \phi + \beta)}$ is equal to the response at 0 rotation [W * F(r, $\phi$)] , multiplied by a complex phase shift $e^{i m \theta}$. Thus, we have shown that cross-correlation with $W_m$ yields a rotationally equivariant feature mapping when $W_m$ is a circular harmonic. 
+
+\begin{figure}[t!]
+  \includegraphics[width=\linewidth]{EffectOfImageRotation.png}
+  \caption{Cross correlation of filter $W_m$ with non-rotated image and cross correlation of the same filter $W_m$ with an image rotated by angle $\theta$ have a defined mapping between them. We can transform the unrotated response to the rotated response via multiplication by $e^{i m \theta}$}
+  \label{fig:rotatedCrossCorrelation}
+\end{figure}
+
+Hence, we observe that the cross-correlation of the rotated signal F(r, $\phi - \theta$) with harmonic filter $W_m$ = R(r) $e^{i(m \phi + \beta)}$ is equal to the response at 0 rotation [W * F(r, $\phi$)] , multiplied by a complex phase shift $e^{i m \theta}$. This is also described in figure 2. Thus, we have shown that cross-correlation with $W_m$ yields a rotationally equivariant feature mapping when $W_m$ is a circular harmonic. 
 \subsection{Chain rule for cross-correlation of circular harmonics}
 In this section, we will show that the rotation order of a feature map, that we obtain after subsequent cross-correlations in each layer, is equal to the sum of the rotation orders of the filters in the chain.
 Let us consider cross-correlation of a $\theta$ rotated image F(r, $\phi - \theta$)  with a filter $W_m$ and then followed by another cross-correlation with $W_n$. As shown previously, we write the response of first cross-correlation as  $e^{i m \theta}$[W * F(r, $\phi$)] . Then we can write the chain rule of harmonic cross-correlation as:
@@ -164,12 +178,6 @@ $\hspace{10pt}$ = $e^{i (m + n) \theta} $ [ $W_n$ * [ $W_m$ * F]]
 \end{center}
 
 Therefore, we see that chained cross-correlation results in a summation of the rotation orders of the individual filters $W_m$ and $W_n$.
-
-\begin{figure}[t!]
-  \includegraphics[width=\linewidth]{PolarImage.png}
-  \caption{An image describing polar co-ordinates with image center as origin}
-  \label{fig:polarCoord}
-\end{figure}
 
 
 
