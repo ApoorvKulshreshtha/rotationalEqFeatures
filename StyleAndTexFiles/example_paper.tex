@@ -64,6 +64,9 @@
 % you can specify symbols, otherwise they are numbered in order
 % ideally, you should not use this facility. affiliations will be numbered
 % in order of appearance and this is the preferred way.
+
+
+
 \icmlsetsymbol{equal}{*}
 
 \begin{icmlauthorlist}
@@ -104,6 +107,10 @@
 %\printAffiliationsAndNotice{\icmlEqualContribution} % otherwise use the standard text.
 %\footnotetext{hi}
 
+
+
+
+
 \begin{abstract} 
 Current convolution methods for feature learning are already translation equivariant i.e. translation in input image produces a proportionate translation in feature maps. However, this is not true for rotational equivariance. A lot of recent research has been focussed on ensuring rotational equivariance for the same. Our research focusses on characterizing effect of different input image parameters, like sparsity, density and noise, on effectiveness of the learnt rotational equivariant features proposed in the recent work of Harmonic Convolutions. Feature maps learnt using Harmonic Convolutions exhibit equivariance to patch-wise translation and 360 degree rotation. These variant of normal convolutions use parameter-efficient and low computational complexity representation, thereby encoding complicated rotational equivariance within the network. In this paper, we show the effectiveness of rotational equivariance features for image classification as the sparsity, density and noise levels of the input image vary.
 
@@ -119,7 +126,8 @@ Current convolution methods for feature learning are already translation equivar
 Harmonic Convolutions hard bake 360 degree rotational equivariance into their feature representations by restricting the convolution filters to be from the circular harmonics family. In the following sections, we will discuss the properties of circular harmonics which help the network learn rotation equivariant features. To reiterate, rotational equivariance implies that a particular rotation in input image produces a proportionate rotation in feature maps.
 
 \subsection{Circular Harmonics Equivariance}
-We describe an image using polar co-ordinates r and $\phi$ as F(r , $\phi$). We will now show that there exists a filter $W_m$ such that the cross-correlation of F with $W_m$ yields a rotationally equivariant feature map. This condition is satisfied when $W_m$ is a circular harmonic of the form $W_m$ = R(r) $e^{i(m \phi + \beta)}$ for some m belonging to integers. Consider the rotation of original image by $\theta$ which leads to a new image F(r, $\phi - \theta$). The cross-correlation for the rotated image is
+We describe an image using polar co-ordinates r and $\phi$ as F(r , $\phi$). This can be understood better by looking at Figure \ref{fig:polarCoord}. Please note that this is just to depict the polar co-ordinates of a filter. In actual setting, the filter will be applied patch-wise to the image and therefore, a single image patch will be described using this method. \\
+We will now show that there exists a filter $W_m$ such that the cross-correlation of F with $W_m$ yields a rotationally equivariant feature map. This condition is satisfied when $W_m$ is a circular harmonic of the form $W_m$ = R(r) $e^{i(m \phi + \beta)}$ for some m belonging to integers. Consider the rotation of original image by $\theta$ which leads to a new image F(r, $\phi - \theta$). The cross-correlation for the rotated image is
 
 \vspace{-0.1cm}
 \begin{center} 
@@ -141,7 +149,33 @@ $\hspace{10pt}$ = $e^{i m \theta}$ [W * F(r, $\phi$)]
 Hence, we observe that the cross-correlation of the rotated signal F(r, $\phi - \theta$) with harmonic filter $W_m$ = R(r) $e^{i(m \phi + \beta)}$ is equal to the response at 0 rotation [W * F(r, $\phi$)] , multiplied by a complex phase shift $e^{i m \theta}$. Thus, we have shown that cross-correlation with $W_m$ yields a rotationally equivariant feature mapping when $W_m$ is a circular harmonic. 
 \subsection{Chain rule for cross-correlation of circular harmonics}
 In this section, we will show that the rotation order of a feature map, that we obtain after subsequent cross-correlations in each layer, is equal to the sum of the rotation orders of the filters in the chain.
-TO-DO
+Let us consider cross-correlation of a $\theta$ rotated image F(r, $\phi - \theta$)  with a filter $W_m$ and then followed by another cross-correlation with $W_n$. As shown previously, we write the response of first cross-correlation as  $e^{i m \theta}$[W * F(r, $\phi$)] . Then we can write the chain rule of harmonic cross-correlation as:
+\vspace{-0.1cm}
+\begin{center} 
+$W_n$ * [$W_m$ * F(r, $\phi - \theta$)] = $W_n$ * $e^{i m \theta}$[$W_m$ * F(r, $\phi$)] \\ \vspace{0.1cm}
+$\hspace{10pt}$ = $e^{i m \theta}$($W_n$ * [$W_m$ * F(r, $\phi$)])   \\ \vspace{0.1cm}
+$\hspace{10pt}$ = $e^{i m \theta} e^{i n \theta}$ [ $W_n$ * [ $W_m$ * F]]  \\ \vspace{0.1cm}
+$\hspace{10pt}$ = $e^{i (m + n) \theta} $ [ $W_n$ * [ $W_m$ * F]] 
+\end{center}
+
+Therefore, we see that chained cross-correlation results in a summation of the rotation orders of the individual filters $W_m$ and $W_n$.
+
+\begin{figure}[t!]
+  \includegraphics[width=\linewidth]{PolarImage.png}
+  \caption{An image describing polar co-ordinates with image center as origin}
+  \label{fig:polarCoord}
+\end{figure}
+
+\begin{figure}[b!]
+  \includegraphics[width=\linewidth]{FilterArchitecture.png}
+  \caption{Filter Architecture is defined as linear combination of Radial profile multiplied by corresponding concentric cells in the sampling matrix}
+  \label{fig:FilterArch}
+\end{figure}
+
+\subsection{Circular harmonic filter architecture}
+
+
+
 
 \section{Experiments}
 
