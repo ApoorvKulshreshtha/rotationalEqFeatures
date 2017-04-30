@@ -166,16 +166,22 @@ Therefore, we see that chained cross-correlation results in a summation of the r
   \label{fig:polarCoord}
 \end{figure}
 
-\begin{figure}[b!]
-  \includegraphics[width=\linewidth]{FilterArchitecture.png}
-  \caption{Filter Architecture is defined as linear combination of Radial profile multiplied by corresponding concentric cells in the sampling matrix}
-  \label{fig:FilterArch}
-\end{figure}
+
 
 \subsection{Circular harmonic filter architecture}
 
+As we described in the previous sections, a Harmonic filter is defined as $W_m$ = R(r) $e^{i(m \phi + \beta)}$, so that it can capture the rotation equivariance while image classification. We also showed that whenever a test image is rotated, the cross-correlation of the rotated image with the learned filter, results in a product of  $e^{i m \theta}$ with [W * F(r, $\phi$)], where [W * F(r, $\phi$)] is the original non-rotated test image. Hence, the classifier is able to learn that any $e^{i m \theta}$ multiple of the original cross-correlation is the same image rotated by $\theta$, and thereby classify it correctly. Therefore, this clearly defined mapping helps achieve rotation equivariance of filters, which in turn leads to global rotation invariance of the network in predicting rotated images. This is the reason, the network is able to classify rotated images with equally good accuracy.
+\begin{figure}[t!]
+  \includegraphics[width=\linewidth]{FilterArchitecture.png}
+  \caption{Filter Architecture showing mapping of concentric harmonic filter profile to the cells of a square filter}
+  \label{fig:FilterArch}
+\end{figure}
 
+We will now delve deeper into the architecture of a Harmonic filter.  The learnable parameters of a harmonic filter $W_m$ = R(r) $e^{i(m \phi + \beta)}$, are the radial profile R(r), which is a function of the radius r from the origin, and the per-filter phase offset $\beta$. For a n*n filter, the number of radial profile elements is equal to the number of rings of equal distance from the center of the filter. An example of this filter can be seen in Figure  \ref{fig:FilterArch}. This filter is a 5 * 5 filter with 6 rings of equal distance from the center of the filter. The smallest ring is just a single point. It is called a 5*5 filter because we are mapping the radial profile to the elements of a square filter with has length 5 and hence dimensions 5*5. And hence, this filter has 6 radial profile terms and 1 phase offset to learn. This is in contrast to a regular convolution filter which has 25 parameters to learn ( because of 5*5 dimension of the filter). 
 
+Now, that we have explained the architecture of the harmonic filters, there is one very important characteristic to notice. Because we are learning a complete radial profile which depends only on the radius, the filter values for a particular radial profile are same, with only difference in sign. This can be perceived as an advantage as well as a disadvantage. Advantage because this kind of constraint enables the network to learn a rotation invariant classifier. And a disadvantage because the constraint doesn't let the network learn the filter freely during training , so that it can perform the best. In the next sections, we will see how this constraining of filters serves as an advantage as well as a disadvantage when looking at different applications.
+
+To reiterate, till now the paper gives the reader a background of how Harmonic Networks work and how they are able to hard-bake rotation equivariance. More reference on this can be found in the paper [GIVE REFERENCE HERE]. From now on, we will discuss our main focus which describes how change in signal sparsity, signal density and noise level affects rotational equivariant features. 
 
 \section{Experiments}
 
